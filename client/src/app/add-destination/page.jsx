@@ -13,17 +13,27 @@ import {
 import React from "react";
 
 const AddDestinationPage = () => {
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const destination = Object.fromEntries(formData.entries());
     console.log(destination);
+
+    const res = await fetch("http://localhost:3001/destination", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(destination),
+    });
+    const data = await res.json();
+    console.log(data);
   };
   return (
     <div className=" max-w-7xl mx-auto">
       <h1>Add Destination</h1>
       <Card>
-        <form onSubmit={onsubmit} className="p-10 space-y-8 w-3xl">
+        <form onSubmit={onSubmit} className="p-10 space-y-8 w-3xl">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Destination Name */}
             <div className="md:col-span-2">

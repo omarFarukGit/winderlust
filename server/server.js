@@ -1,7 +1,7 @@
 import express from "express";
 import "dotenv/config";
 const app = express();
-const port = 3000;
+const port = 3001;
 import { MongoClient, ServerApiVersion } from "mongodb";
 
 const uri = process.env.MONGO_URI_2;
