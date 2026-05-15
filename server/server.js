@@ -1,8 +1,11 @@
 import express from "express";
 import "dotenv/config";
+import cors from "cors";
+import { MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 const app = express();
 const port = 3001;
-import { MongoClient, ServerApiVersion } from "mongodb";
+app.use(cors());
+app.use(express.json());
 
 const uri = process.env.MONGO_URI_2;
 
@@ -14,7 +17,7 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   },
 });
-app.use(express.json());
+
 async function run() {
   try {
     // Connect the client to the server
@@ -23,13 +26,26 @@ async function run() {
     const db = client.db("wanderlust");
     //create collections
     const destinationCollection = db.collection("destinations");
+    app.get("/destination", async (req, res) => {
+      const result = await destinationCollection.find().toArray();
+      res.json(result);
+    });
+    app.get("/destination/:id", async (req, res) => {
+      const { id } = req.params;
+
+      const result = await destinationCollection
+        .findOne({ _id: new ObjectId(id) })
+      res.json(result);
+    });
 
     app.post("/destination", async (req, res) => {
       const destination = req.body;
+      console.log(destination);
+
       const result = await destinationCollection.insertOne(destination);
-      res.status(201).send({
-        success: true,
-      });
+      // res.status(201).send({
+      //   success: true,
+      // });
     });
 
     // Send a ping to confirm a successful connection
